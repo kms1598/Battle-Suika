@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
+using static AudioManager;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -151,9 +152,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         string msg = PhotonNetwork.NickName + ": " + chatInput.text;
         PV.RPC("ChatRPC", RpcTarget.All, msg);
+        PV.RPC("RPCPlayChatSfx", RpcTarget.Others);
         chatInput.text = "";
     }
-
+    [PunRPC]
+    void RPCPlayChatSfx()
+    {
+        AudioManager.instance.PlayerSfx(AudioManager.Sfx.Click);
+    }
     [PunRPC]
     void ChatRPC(string msg) //채팅 구현
     {
