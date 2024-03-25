@@ -3237,6 +3237,7 @@ MonoBehaviour:
   - {fileID: 1561101185}
   isGameover: 0
   gameover: {fileID: 1639636844}
+  leaveBtn: {fileID: 431628828}
   timelimit: {fileID: 877916887}
   userTime: 5
   skill1Blind: {fileID: 589612766}

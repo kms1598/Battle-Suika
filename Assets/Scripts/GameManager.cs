@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public Image[] blind;
     public bool isGameover = false;
     public Image gameover;
+    public Button leaveBtn;
     public Image timelimit;
     const float time = 5;
     public float userTime = time;
@@ -29,7 +30,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     const int skill1CoolTime = 1;
     public Image skill2Blind;
     bool canSkill2 = true;
-    const int skill2CoolTime = 5;
+    const int skill2CoolTime = 15;
 
     int isRock = 0;
 
@@ -37,7 +38,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     Vector3 makepoint;
 
-    void Start()
+    void Awake()
     {
         Application.targetFrameRate = 60;
         Time.timeScale = 1;
@@ -78,6 +79,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     private void Update()
     {
+        if(isGameover) return;
+        
         Skill(PhotonNetwork.IsMasterClient ? 0 : 1);
 
         userTime -= Time.deltaTime;
@@ -150,13 +153,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public void GameOver()
     {
-        PV.RPC("RPCLeaveGameScene", RpcTarget.MasterClient);
+        PV.RPC("RPCGameOver", RpcTarget.Others);
+        PhotonNetwork.LoadLevel(0);
     }
-
     [PunRPC]
-    void RPCLeaveGameScene()
+    public void RPCGameOver()
     {
-        SceneManager.LoadScene(0);
+        PhotonNetwork.LoadLevel(0);
     }
 
     void Skill(int index)
@@ -219,7 +222,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     IEnumerator Skill2(int target)
     {
         blind[target].gameObject.SetActive(true);
-        yield return new WaitForSeconds(15);
+        yield return new WaitForSeconds(skill2CoolTime);
         blind[target].gameObject.SetActive(false);
     }
 
@@ -232,11 +235,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void RPCGameOver(int winner, string whyWin)
     {
-        Time.timeScale = 0;
         PV.RPC("RPCPlaySfx", RpcTarget.AllBuffered, AudioManager.Sfx.GameOver);
         gameover.transform.GetChild(1).GetComponent<TMP_Text>().text = PhotonNetwork.PlayerList[winner].NickName;
         gameover.transform.GetChild(2).GetComponent<TMP_Text>().text = whyWin;
         gameover.gameObject.SetActive(true);
+        leaveBtn.interactable = PhotonNetwork.IsMasterClient;
         isGameover = true;
     }
 }

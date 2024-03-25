@@ -32,7 +32,7 @@ public class Circle : MonoBehaviourPunCallbacks
         {
             if(level == -1)
             {
-                float rand = Random.Range(3, 16) / 10;
+                float rand = Random.Range(5, 16) / 10;
                 transform.localScale = new Vector3(rand, rand, 0);
                 PV.RPC("RPCRockSetting", RpcTarget.AllBuffered);
             }
@@ -166,6 +166,8 @@ public class Circle : MonoBehaviourPunCallbacks
 
     private void OnTriggerStay2D(Collider2D collision)
     {
+        if (GameManager.instance.isGameover) return;
+
         if(collision.tag == "Line")
         {
             deadTime += Time.deltaTime;
@@ -173,7 +175,7 @@ public class Circle : MonoBehaviourPunCallbacks
 
         if(deadTime >= 2)
         {
-            GameManager.instance.PV.RPC("RPCGameOver", RpcTarget.AllBuffered, PhotonNetwork.IsMasterClient ? 1 : 0, PhotonNetwork.PlayerList[PhotonNetwork.IsMasterClient ? 1 : 0].NickName + "님이 라인을 넘었습니다!");
+            GameManager.instance.PV.RPC("RPCGameOver", RpcTarget.AllBuffered, PhotonNetwork.IsMasterClient ? 1 : 0, PhotonNetwork.PlayerList[PhotonNetwork.IsMasterClient ? 0 : 1].NickName + "님이 라인을 넘었습니다!");
         }
     }
 }

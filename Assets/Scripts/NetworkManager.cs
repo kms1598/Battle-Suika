@@ -33,23 +33,17 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
-        PhotonNetwork.AutomaticallySyncScene = true; //기본 방설정들
+        PhotonNetwork.AutomaticallySyncScene = false;
         Screen.SetResolution(1920, 1080, false);
 
         if (PhotonNetwork.InRoom) //방에 있는 사람이 메인 씬으로 돌아오는 경우
         {
+            SetRoom();
             mainPanel.SetActive(false);
             lobbyPanel.SetActive(false);
             roomPanel.SetActive(true);
-            RoomRenewal();
         }
-        else if(PhotonNetwork.InLobby) //로비에 있는 사람이 메인 씬으로 돌아오는 경우
-        {
-            mainPanel.SetActive(false);
-            lobbyPanel.SetActive(true);
-            roomPanel.SetActive(false);
-        }
-        else //나간 사람이 메인 씬으로 돌아오는 경우
+        else
         {
             mainPanel.SetActive(true);
             lobbyPanel.SetActive(false);
@@ -98,6 +92,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom() //방에 들어오면 방과 플레이어를 설정
     {
+        SetRoom();
+    }
+
+    void SetRoom() //방의 정보 정리
+    {
         roomPanel.SetActive(true);
         lobbyPanel.SetActive(false);
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
@@ -107,7 +106,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         for (int i = 0; i < chatText.Length; i++) chatText[i].text = ""; //채팅창 비우기
     }
 
-    void RoomRenewal() //방에서의 방 정보 업데이트
+    void RoomRenewal() //플레이어 정보 업데이트
     {
         foreach(GameObject player in players)
         {
@@ -134,14 +133,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
+    public override void OnPlayerEnteredRoom(Player newPlayer) //누군가 입장
     {
         RoomRenewal();
         PV.RPC("ChatRPC", RpcTarget.All, "<color=yellow>" + newPlayer.NickName + " joined game</color>");
         UpdateRoomInfo();
     }
 
-    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    public override void OnPlayerLeftRoom(Player otherPlayer) //누군가 퇴장
     {
         RoomRenewal();
         PV.RPC("ChatRPC", RpcTarget.All, "<color=yellow>" + otherPlayer.NickName + " leaved game</color>");
@@ -219,6 +218,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void StartGame()
     {
-        SceneManager.LoadScene(1);
+        PV.RPC("RPCStartGame",  RpcTarget.Others);
+        PhotonNetwork.LoadLevel(1);
+    }
+    [PunRPC]
+    public void RPCStartGame()
+    {
+        PhotonNetwork.LoadLevel(1);
     }
 }
