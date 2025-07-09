@@ -8,7 +8,7 @@ public class AudioManager : MonoBehaviour
 
     public AudioClip[] sfxClips;
     int sfxIndex;
-    const int channels = 7;
+    const int channels = 20;
     AudioSource[] sfxPlayers;
     public enum Sfx { Click, Drop, LevelUp, SkillGauge, Skill1, Skill2, GameOver}
 
@@ -54,10 +54,5 @@ public class AudioManager : MonoBehaviour
             sfxPlayers[loopIndex].Play();
             break;
         }
-    }
-
-    public void PlayClickSfx()
-    {
-        AudioManager.instance.PlayerSfx(AudioManager.Sfx.Click);
     }
 }

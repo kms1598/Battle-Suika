@@ -58,7 +58,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             PhotonNetwork.ConnectUsingSettings();
     }
 
-    public override void OnConnectedToMaster() => PhotonNetwork.JoinLobby();
+    public override void OnConnectedToMaster() => PhotonNetwork.JoinLobby(TypedLobby.Default);
 
     public override void OnJoinedLobby() //로비에 들어오면 실행됨
     {
@@ -121,8 +121,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         if(PhotonNetwork.IsMasterClient)
         {
-            startBtn.gameObject.SetActive(true);
-
             if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
                 startBtn.interactable = true;
             else

@@ -13,4 +13,9 @@ public class BtnManager : MonoBehaviour
     {
         targetPanel.SetActive(!targetPanel.activeSelf);
     }
+
+    public void PlayClickSfx()
+    {
+        AudioManager.instance.PlayerSfx(AudioManager.Sfx.Click);
+    }
 }
