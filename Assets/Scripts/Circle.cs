@@ -32,7 +32,7 @@ public class Circle : MonoBehaviourPunCallbacks
         {
             if(level == -1)
             {
-                float rand = Random.Range(5, 16) / 10;
+                float rand = Random.Range(5, 16) / 10f;
                 transform.localScale = new Vector3(rand, rand, 0);
                 PV.RPC("RPCRockSetting", RpcTarget.AllBuffered);
             }
@@ -175,7 +175,7 @@ public class Circle : MonoBehaviourPunCallbacks
 
         if(deadTime >= 2)
         {
-            GameManager.instance.PV.RPC("RPCGameOver", RpcTarget.AllBuffered, PhotonNetwork.IsMasterClient ? 1 : 0, PhotonNetwork.PlayerList[PhotonNetwork.IsMasterClient ? 0 : 1].NickName + "´ÔÀÌ ¶óÀÎÀ» ³Ñ¾ú½À´Ï´Ù!");
+            GameManager.instance.PV.RPC("RPCGameOver", RpcTarget.AllBuffered, PhotonNetwork.IsMasterClient ? 1 : 0, PhotonNetwork.PlayerList[PhotonNetwork.IsMasterClient ? 0 : 1].NickName + "Â´Ã”Ã€ÃŒ Â¶Ã³Ã€ÃÃ€Â» Â³Ã‘Â¾ÃºÂ½Ã€Â´ÃÂ´Ã™!");
         }
     }
 }
